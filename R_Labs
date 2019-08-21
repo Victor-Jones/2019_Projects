@@ -92,5 +92,67 @@ if(x >= 10) break
 }
 
 
+#week 4 Lecture mats
+#------------------------
+
+num <- runif(30)
+summary(num)
+fac <- factor(sample(letters[1:5], 30, replace = TRUE))
+summary(fac)
+bool <- sample(c(TRUE, FALSE, NA), 30, replace = TRUE)
+summary(bool)
+dfr <- data.frame(num, fac, bool)
+summary(dfr)
+head(dfr)
+str(dfr)
+View(dfr)
+View(head(dfr, 10))
+
+#datasets
+#------------------------
+
+data(package = .packages(TRUE))
+data("kidney", package = "survival")
+head(kidney)
+
+#importing data from text files
+#------------------------
+deer_data_txt <- read.table("datasets/RedDeerEndocranialVolume.txt", header=TRUE, fill=TRUE)
+head(deer_data_txt)
+deer_data_csv <- read.csv("datasets/RedDeerEndocranialVolume.csv", header=TRUE, fill=TRUE)
+head(deer_data_csv)
+identical(deer_data_txt, deer_data_csv)
+
+crab_tag <- read.csv("datasets/crabtag.csv", header=FALSE, fill=TRUE, skip=10, nrow=2)
+crab_tag
+crab_tag <- read.csv("datasets/crabtag.csv", header=TRUE, fill=TRUE, skip=27, nrow=2)
+crab_tag
+
+colnames(crab_tag) <- c("MissionDay", "Date", "MaxTemp", "MinTemp", "MaxDepth", "MinDepth", "BattVolts")
+head(crab_tag)
+
+write.csv(crab_tag, "crab_tag.csv", row.names = FALSE, fileEncoding = "utf8")
+
+#importing data from spreadsheets
+#------------------------
+
+install.packages("xlsx")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
