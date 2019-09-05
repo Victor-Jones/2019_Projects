@@ -91,6 +91,15 @@ print(x)
 if(x >= 10) break
 }
 
+#week 3 Tutorial
+#------------------------
+
+nums <- 1:200
+
+my_df <- data.frame(factor= factor(c("yes","no","yes","yes", "yes", "no")), integer =  as.integer(1:6), numeric = 1:6)
+summary(my_df)
+subset(my_df, integer == 4)
+
 
 #week 4 Lecture mats
 #------------------------
@@ -340,6 +349,89 @@ colnames(three_d_array)
 a_matrix[1,1]
 rbind(a_matrix, another_matrix)
 cbind(a_matrix, another_matrix)
+
+#week 6 Lecture mats
+#------------------------
+
+library(ggplot2)
+head(mtcars)
+
+g <- ggplot(data=mtcars, aes(x=disp, y=mpg))
+g <- g + geom_point(size=2)
+g <- g + geom_smooth(method=lm)
+g
+
+g <- ggplot(data=mtcars, aes(x=disp, y=mpg))
+g <- g + geom_point(size=2)
+g <- g + geom_smooth()
+g
+
+head(Orange)
+g <- ggplot(data=Orange, aes(x=age, y=circumference))
+g <- g + geom_point(size=2)
+g <- g + geom_smooth(method=lm)
+g
+
+lm(circumference ~ age, data=Orange)
+
+orange_model <- lm(circumference ~ age, data=Orange)
+coef(orange_model)
+
+lm(circumference ~ age, data=Orange)
+
+g <- ggplot(data=Orange, aes(x=age, y=circumference))
+g <- g + geom_point(size=2)
+g <- g + geom_smooth(method=lm)
+g <- g + geom_point(aes(x = 1300, y = 160.4,
+colour = "red"))
+g <- g + theme(legend.position="none")
+g
+
+g <- ggplot(data=Orange, aes(x=age, y=circumference))
+g <- g + geom_point(size=2)
+g <- g + geom_smooth()
+g <- g + geom_point(aes(x = 1300, y = 160.4,
+colour = "red"))
+g <- g + theme(legend.position="none")
+g
+
+g <- ggplot(data=Orange, aes(x=age, y=circumference))
+g <- g + geom_point(size=2)
+g <- g + geom_smooth(method = "lm")
+g <- g + geom_abline(slope = 0.11, intercept = 17.40,
+na.rm = FALSE, show.legend = NA)
+g <- g + geom_point(aes(x = 1300, y = 160.4,
+colour = "red"))
+g <- g + theme(legend.position="none")
+g
+
+model_orange <- loess(circumference ~ age, data = Orange)
+modelFit_model_orange <- data.frame(predict(model_orange, se = TRUE))
+
+orange_for_plot <- data.frame(cbind(age = Orange$age, circumference = Orange$circumference,fit = modelFit_model_orange$fit,upperBound = modelFit_model_orange$fit + 2 * modelFit_model_orange$se.fit,lowerBound = modelFit_model_orange$fit - 2 * modelFit_model_orange$se.fit))
+head(orange_for_plot)
+
+g <- ggplot(orange_for_plot, aes(age, circumference))
+g <- g + geom_point()
+g <- g + geom_linerange(aes(ymin = lowerBound,ymax = upperBound))
+g <- g + geom_point(aes(age, fit,colour="red", size=0.5))
+g <- g + geom_smooth(method = "loess")
+g <- g + theme(legend.position="none")
+g
+
+g <- ggplot(orange_for_plot, aes(age, circumference))
+g <- g + geom_point()
+g <- g + geom_smooth(method = "loess")
+g <- g + geom_line(aes(age, fit, colour="black"),orange_for_plot)
+g <- g + theme(legend.position="none")
+g
+
+predict(model_orange, 400)
+predict(model_orange, 800)
+
+our_model <- lm(circumference ~ age, data=Orange)
+our_residuals <- resid(our_model)
+plot(Orange$age, our_residuals, ylab="Residuals", xlab="Age", main="Residuals: circumference ~ age")
 
 
 
