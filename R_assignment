@@ -1,19 +1,29 @@
-########################################
-# Victor Jones Assignment 1 a R script #
-########################################
+########################################################################################
+# Victor Jones Assignment 1 a R script                                                 #
+########################################################################################
 
-########################################
-# Question 1
-########################################
+#all plots saved to default install location in victor_jones_assignment_plot.pdf
+pdf('victor_jones_assignment_plot.pdf')
 
-map(xlim = range(132,185),ylim = range(-15,-45))
+#######################################################################################
+# Question 1                                                                          #
+#######################################################################################
+
+#include maps library
+library(maps)
+
+#create map in specific longitude and latitude range
+map(xlim = range(130,185),ylim = range(-15,-45))
+
+#place blue rectangle over selected co-ordinates
 rect(152,-43,170,-20, col = NULL,border = "blue")
 
+#surround plot with box
+box()
 
-
-########################################
-# Question 2
-########################################
+#######################################################################################
+# Question 2                                                                          #
+#######################################################################################
 
 #create data frames to store vales from the for loop
 monthly_maps <- data.frame(year = character(), month = character(), mean_sst = numeric())
@@ -62,17 +72,17 @@ colnames(monthly_maps) <-c("year","month","mean_SST")
 colnames(yearly_maps) <-c("year","yearly_mean")
 
 
-########################################
-# Question 3
-########################################
+#######################################################################################
+# Question 3                                                    	    	      #
+#######################################################################################
 
 write.csv(monthly_maps,file = "monthly_temps.csv")
 write.csv(yearly_maps,file = "yearly_temps.csv")
 
 
-########################################
-# Question 4
-########################################
+#######################################################################################
+# Question 4                                                                          #
+#######################################################################################
 
 #load ggplot2 library
 library(ggplot2)
@@ -86,7 +96,6 @@ yearly_plot <- yearly_plot + labs(y = "Mean temperature (C)", x= "Year")
 yearly_plot <- yearly_plot + scale_x_continuous(breaks=seq(1950,2015,5))
 yearly_plot
 
-ggsave("Victor_Yearly_Plot.pdf")
 
 #ggplot of mean SST by month
 monthly_plot <- ggplot(data = monthly_maps, aes(x=month, y= mean_SST))
@@ -97,13 +106,14 @@ monthly_plot <- monthly_plot + labs(y = "Mean temperature (C)", x= "Month")
 monthly_plot <- monthly_plot + scale_x_continuous(breaks=seq(1,12,1))
 monthly_plot
 
-ggsave("Victor_Monthly_Plot.pdf")
 
-########################################
-# Question 5
-########################################
+#######################################################################################
+# Question 5                                                                          #
+#######################################################################################
 
-#for question 5 i have decided to compare the monthly SST readings with the average montly rainfall of my hometown of Coffs Harbour
+#For question 5 i have decided to compare the monthly SST readings with the average montly rainfall of my hometown 
+#of Coffs Harbour and try to see if there is any connection between the mean SST and the average monthly to yearly rainfall.
+
 #load in average monthly rainfall data for Coffs Harbour to convert to yearly averages sourced from
 #http://www.bom.gov.au/jsp/ncc/cdio/wData/wdata?p_nccObsCode=139&p_display_type=dataFile&p_stn_num=059040
 
@@ -122,7 +132,6 @@ coffs_monthly_plot <- coffs_monthly_plot + ggtitle("Mean Monthly Rainfall Coffs 
 coffs_monthly_plot <- coffs_monthly_plot + labs(y = "Mean Rainfall (mm)", x= "Month")
 coffs_monthly_plot <- coffs_monthly_plot + scale_x_continuous(breaks=seq(1,12,1))
 coffs_monthly_plot
-
 
 #calculate yearly average
 #create data frames to store vales from the for loop
@@ -144,10 +153,13 @@ colnames(coffs_yearly_rainfall) <-c("year","mean_yearly_rain")
 coffs_yearly_plot <- ggplot(data = coffs_yearly_rainfall, aes(x=year, y= mean_yearly_rain))
 coffs_yearly_plot <- coffs_yearly_plot + geom_point(size=4)
 coffs_yearly_plot <- coffs_yearly_plot + geom_smooth(size = 2)
-coffs_yearly_plot <- coffs_yearly_plot + ggtitle("Mean Monthly Rainfall Coffs Harbour")
+coffs_yearly_plot <- coffs_yearly_plot + ggtitle("Mean Yearly Rainfall Coffs Harbour")
 coffs_yearly_plot <- coffs_yearly_plot + labs(y = "Mean Rainfall (mm)", x= "Year")
 coffs_yearly_plot <- coffs_yearly_plot + scale_x_continuous(breaks=seq(1950,2015,5))
 coffs_yearly_plot
+
+#load dplyr library to use left join function
+library(dplyr)
 
 #using joined tables the correlation between the two datasets can easily be displayed 
 yearly_comparison_data <- left_join(yearly_maps, coffs_yearly_rainfall, by = "year")
@@ -158,14 +170,22 @@ colnames(yearly_comparison_data) <- c("year","mean_yearly_temp","mean_yearly_rai
 correlation_plot <- ggplot(data = yearly_comparison_data, aes(x=mean_yearly_temp, y= mean_yearly_rain))
 correlation_plot <- correlation_plot + geom_point(size=4)
 correlation_plot <- correlation_plot + geom_smooth(method=lm, size = 2)
-correlation_plot <- correlation_plot + ggtitle("yearly SST vs Coffs Harbour Yearly rain")
+correlation_plot <- correlation_plot + ggtitle("Yearly SST vs Coffs Harbour Yearly Rainfall")
 correlation_plot <- correlation_plot + labs(y = "Mean Yearly Rainfall (mm)", x= "Yearly Mean SST (C)")
 correlation_plot <- correlation_plot + scale_x_continuous(breaks=seq(18,22,0.1))
 correlation_plot
+
+#ggsave("Victor_Coffs_Correlation_Plot.pdf")
 
 #seperate data for corellation calculation
 model_yearly_temp <- yearly_comparison_data$mean_yearly_temp
 model_yearly_rain <- yearly_comparison_data$mean_yearly_rain
 
 #calculate corellation between yearly mean rain and yearly mean SST
-cor(model_yearly_temp,model_yearly_rain, use = "complete.obs")
+correlation_value <- cor(model_yearly_temp,model_yearly_rain, use = "complete.obs")
+
+#from this correlation calculation we see it is a positive relationship but a very weak one at 0.2315089
+correlation_value
+
+dev.off()
+
